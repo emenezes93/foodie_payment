@@ -3,11 +3,16 @@ from psycopg2 import Error
 from datetime import datetime
 # Conexão com o banco de dados
 conn = psycopg2.connect(
-    dbname=os.getenv("POSTGRES_DB"),
-    user=os.getenv("POSTGRES_USER"),
-    password=os.getenv("POSTGRES_PASSWORD"),
-    host=os.getenv("POSTGRES_HOST"),
-    port=os.getenv("POSTGRES_PORT")  
+  #  dbname=os.getenv("POSTGRES_DB"),
+  #  user=os.getenv("POSTGRES_USER"),
+  #  password=os.getenv("POSTGRES_PASSWORD"),
+  #  host=os.getenv("POSTGRES_HOST"),
+  #  port=os.getenv("POSTGRES_PORT")
+    dbname='gestaopedidos',
+    user='postgres',
+    password='3EFNQnnKL8He',
+    host='database-1.ctiiec6qy7gg.us-east-2.rds.amazonaws.com',
+    port=5432
 )
 
 def busca_cliente(conn, codigo_cliente):

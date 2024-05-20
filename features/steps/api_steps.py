@@ -1,51 +1,69 @@
-import requests
 from behave import given, when, then
+import requests
 
-# URL base da API
-BASE_URL = 'http://localhost:5000/api/pedido'
-
-# Dados do pedido para os testes
-PEDIDO_DATA = {
-    'id': 1,
-    'pedido': 'Produto de Teste',
-    'valor': 10.99
-}
-
-# Variável para armazenar o URL do QR code de pagamento
-qr_code_url = None
-
-@given('um novo pedido com ID, nome e valor')
+@given('que eu tenho os dados para gerar um pagamento')
 def step_impl(context):
-    # Não é necessário fazer nada aqui, os dados do pedido já estão definidos acima
-    pass
+    context.payload = {
+        'cpf': '123.456.789-10',
+        'nome': 'Fulano',
+        'email': 'fulano@example.com',
+        'token': 'abc123',
+        'status': 'pendente',
+        'codigo': '789',
+        'valor': '100.00'
+    }
 
-@when('faço uma solicitação POST para a API')
+@when('eu faço uma solicitação para gerar um pagamento')
 def step_impl(context):
-    global qr_code_url
-    response = requests.post(BASE_URL, json=PEDIDO_DATA)
-    assert response.status_code == 200
-    qr_code_url = response.json()['qr_code_url']
+    url = 'http://localhost:5000/api/api/gerarPagamento'
+    response = requests.post(url, json=context.payload)
+    context.response = response
 
-@then('recebo um código de resposta 200')
+@then('a resposta deve conter um código de status 200')
 def step_impl(context):
-    # Não é necessário fazer nada aqui, a verificação já foi feita no passo anterior
-    pass
+    assert context.response.status_code == 200
 
-@then('recebo um URL do QR code de pagamento')
+@then('o pagamento deve ser gerado com sucesso')
 def step_impl(context):
-    assert qr_code_url is not None
+    assert 'message' in context.response.json()
 
-@when('faço uma solicitação GET para a API')
+@given('que eu tenho os dados para atualizar um pagamento')
 def step_impl(context):
-    response = requests.get(BASE_URL)
-    context.status_code = response.status_code
+    context.payload = {
+        'codigo': '789',
+        'token': 'abc123',
+        'status': '1'
+    }
 
-@then('recebo um código de resposta 405')
+@when('eu faço uma solicitação para atualizar um pagamento')
 def step_impl(context):
-    assert context.status_code == 405
+    url = 'http://localhost:5000/api/atualizarPagamento'
+    response = requests.post(url, json=context.payload)
+    context.response = response
 
-@then('recebo uma mensagem de erro indicando que devo usar o método POST')
+@then('o pagamento deve ser atualizado com sucesso')
 def step_impl(context):
-    expected_message = 'Use POST method to create a new order.'
-    response_message = requests.post(BASE_URL).json()['message']
-    assert response_message == expected_message
+    assert context.response.status_code == 200
+
+@then('uma mensagem de erro deve ser retornada')
+def step_impl(context):
+    assert context.response.status_code == 400
+    assert 'message' in context.response.json()
+
+@given('que eu tenho dados inválidos para atualizar um pagamento')
+def step_impl(context):
+    context.payload = {
+        'codigo': '789',
+        'status': 'pago'
+    }
+
+@given('que eu tenho dados incompletos para gerar um pagamento')
+def step_impl(context):
+    context.payload = {
+        'cpf': '123.456.789-10',
+        'nome': 'Fulano',
+        'email': 'fulano@example.com',
+        'status': 'pendente',
+        'codigo': '789',
+        'valor': '100.00'
+    }
