@@ -1,0 +1,12 @@
+Feature: Testando a API
+
+  Scenario: Testar a criação de um pedido
+    Given um novo pedido com ID, nome e valor
+    When faço uma solicitação POST para a API
+    Then recebo um código de resposta 200
+    And recebo um URL do QR code de pagamento
+
+  Scenario: Testar a obtenção de um pedido (deve falhar)
+    When faço uma solicitação GET para a API
+    Then recebo um código de resposta 405
+    And recebo uma mensagem de erro indicando que devo usar o método POST
