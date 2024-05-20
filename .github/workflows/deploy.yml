@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'foodie_payment/**'
 
 jobs:
   # sonarcloud:
