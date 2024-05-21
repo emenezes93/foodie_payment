@@ -20,4 +20,4 @@ RUN python3 -m pip install --upgrade pip && \
 
 EXPOSE 5000
 
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "5000", "--no-server-header", "--no-access-log"]
+CMD ["gunicorn", "app:app", "-b", "0.0.0.0:5000"]
