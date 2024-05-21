@@ -23,3 +23,15 @@ Feature: Testando endpoints para gerar e atualizar pagamento
     When eu faço uma solicitação para gerar um pagamento
     Then a resposta deve conter um código de status 400
     And uma mensagem de erro deve ser retornada
+
+  Scenario: Tentar atualizar um pagamento com um metodo nao permitido
+    Given que eu tenho os dados para atualizar um pagamento
+    When eu faço uma solicitação get nao permmitida para atualizar um pagamento
+    Then a resposta deve conter um código de status 405
+    And uma mensagem de erro deve ser retornada
+
+  Scenario: Tentar gerar um pagamento com um metodo nao permitido
+    Given que eu tenho os dados para gerar um pagamento
+    When eu faço uma solicitação get nao permitida para gerar um pagamento
+    Then a resposta deve conter um código de status 405
+    And uma mensagem de erro deve ser retornada  
